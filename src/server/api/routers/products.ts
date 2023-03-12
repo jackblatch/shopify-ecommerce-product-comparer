@@ -60,9 +60,11 @@ export const productsRouter = createTRPCRouter({
 
         // @TODO consider going up a selector to get product wrapper so we can get the price, image, etc
         const products = await page.evaluate(() => {
+          const cache: Record<string, any> = {};
           return Array.from(document.getElementsByTagName("a")).map(
             (product) => {
-              if (product.href.includes("?_pos=")) {
+              if (product.href.includes("?_pos=") && !cache[product.href]) {
+                cache[product.href] = true;
                 return {
                   link: product.href,
                   hostname: product.hostname,
@@ -76,33 +78,33 @@ export const productsRouter = createTRPCRouter({
         await browser.close();
 
         const cache: any = {};
-        return Promise.all(
-          products.map(async (item) => {
-            if (!item.link || !item.hostname || cache[item.link]) return null;
-            const link = item.link.split("?")[0];
-            const productJSONLink = `${link}.json`;
-            //   return { name: "hello!" };
-            const data = await fetch(productJSONLink);
-            const json = await data.json();
-            cache[item.link] = true;
-            return {
-              id: json.product.id,
-              hostname: item.hostname,
-              link: item.link,
-              handle: json.product.handle,
-              title: json.product.title,
-              image: json.product.image.src,
-              imageHeight: json.product.image.height,
-              imageWidth: json.product.image.width,
-              alt: json.product.image.alt,
-              variants: json.product.variants.map((variant: any) => ({
-                id: variant.id,
-                sku: variant.sku,
-                title: variant.title,
-                price: variant.price,
-              })),
-            };
-          })
+        const allProducts = products.map(async (item) => {
+          if (!item.link || !item.hostname || cache[item.link]) return null;
+          const link = item.link.split("?")[0];
+          const productJSONLink = `${link}.json`;
+          const data = await fetch(productJSONLink);
+          const json = await data.json();
+          cache[item.link] = true;
+          return {
+            id: json.product.id,
+            hostname: item.hostname,
+            link: item.link,
+            handle: json.product.handle,
+            title: json.product.title,
+            image: json.product.image.src,
+            imageHeight: json.product.image.height,
+            imageWidth: json.product.image.width,
+            alt: json.product.image.alt,
+            variants: json.product.variants.map((variant: any) => ({
+              id: variant.id,
+              sku: variant.sku,
+              title: variant.title,
+              price: variant.price,
+            })),
+          };
+        });
+        return Promise.all(allProducts).then((res) =>
+          res.filter((item) => item)
         );
       };
 
