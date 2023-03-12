@@ -44,22 +44,22 @@ export const productsRouter = createTRPCRouter({
         });
     }),
   getProductsFromDomTree: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
+    .input(z.object({ hostname: z.string(), searchTerm: z.string() }))
+    .query(async ({ input }) => {
       // @TODO handle currency - set cart_currency cookie to USD for all requests or get currency from site
       const getProducts = async () => {
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
 
         await page.goto(
-          "https://globalmagicshop.com.au/search?type=product&options%5Bprefix%5D=last&q=bicycle"
+          `https://${input.hostname}/search?type=product&options%5Bprefix%5D=last&q=${input.searchTerm}&limit=24`
         );
 
         // Set screen size
         await page.setViewport({ width: 1080, height: 1024 });
 
         // @TODO consider going up a selector to get product wrapper so we can get the price, image, etc
-        const products = await page.evaluate(() => {
+        let products = await page.evaluate(() => {
           const cache: Record<string, any> = {};
           return Array.from(document.getElementsByTagName("a")).map(
             (product) => {
@@ -70,21 +70,28 @@ export const productsRouter = createTRPCRouter({
                   hostname: product.hostname,
                 };
               } else {
-                return { link: null, hostname: null };
+                return null;
               }
             }
           );
         });
+        // let products = await getProducts("?_pos=");
+
+        if (products.length === 0) {
+          // WIP: need to re-run above function with ?variant= string for includes instead
+          // example: needss to be done to support older shopify stores e.g. PM site
+          // then as a third fallback, get all urls with 'products' in URL. Implement max results.
+          // need to run before map below runs. map should only run on successful completion
+        }
+
         await browser.close();
 
-        const cache: any = {};
         const allProducts = products.map(async (item) => {
-          if (!item.link || !item.hostname || cache[item.link]) return null;
+          if (!item) return null;
           const link = item.link.split("?")[0];
           const productJSONLink = `${link}.json`;
           const data = await fetch(productJSONLink);
           const json = await data.json();
-          cache[item.link] = true;
           return {
             id: json.product.id,
             hostname: item.hostname,
