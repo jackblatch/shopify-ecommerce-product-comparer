@@ -1,56 +1,24 @@
-import puppeteer from "puppeteer";
-import { GetServerSideProps, type NextPage } from "next";
+import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 import { api } from "~/utils/api";
+import Image from "next/image";
 
-export const getServerSideProps: GetServerSideProps<{ data: any }> = async (
-  context
-) => {
-  // @TODO handle currency - set cart_currency cookie to USD for all requests or get currency from site
-  const getProducts = async () => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
+const Home: NextPage = () => {
+  const getProductsFromDomTree = api.products.getProductsFromDomTree.useQuery(
+    { text: "from tRPC" },
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
 
-    await page.goto(
-      "https://globalmagicshop.com.au/search?type=product&options%5Bprefix%5D=last&q=bicycle"
-    );
+  console.log(getProductsFromDomTree.data);
 
-    // Set screen size
-    await page.setViewport({ width: 1080, height: 1024 });
-
-    // @TODO consider going up a selector to get product wrapper so we can get the price, image, etc
-    const products = await page.evaluate(() => {
-      return Array.from(
-        document.querySelectorAll(".ProductItem__Title > a")
-      ).map((product) =>
-        JSON.stringify({
-          name: product.textContent,
-          link: product.getAttribute("href"),
-        })
-      );
-    });
-
-    console.log("PRODUCTS", products.join("\r\n"));
-    await browser.close();
-    return products;
-  };
-
-  const allProducts = await getProducts();
-
-  return {
-    props: {
-      allProducts,
-    },
-  };
-};
-
-const Home: NextPage = (props: Record<string, any>) => {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
-
-  console.log("PDOD", props.allProducts);
+  if (getProductsFromDomTree.isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
@@ -60,13 +28,17 @@ const Home: NextPage = (props: Record<string, any>) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div>
-        {props.allProducts.map((product: string, i: number) => {
-          const parsed = JSON.parse(product);
+        {getProductsFromDomTree.data?.map((product) => {
+          if (!product) return "";
           return (
-            <div key={i}>
-              <a href={`https://globalmagicshop.com.au${parsed.link}`}>
-                {parsed.name}
-              </a>
+            <div key={product.id}>
+              <h1>{product.title}</h1>
+              <Image
+                src={product.image}
+                alt={product.alt ?? product.title}
+                width={product.imageWidth}
+                height={product.imageHeight}
+              />
             </div>
           );
         })}
@@ -76,27 +48,3 @@ const Home: NextPage = (props: Record<string, any>) => {
 };
 
 export default Home;
-
-const AuthShowcase: React.FC = () => {
-  const { data: sessionData } = useSession();
-
-  const { data: secretMessage } = api.example.getSecretMessage.useQuery(
-    undefined, // no input
-    { enabled: sessionData?.user !== undefined }
-  );
-
-  return (
-    <div className="flex flex-col items-center justify-center gap-4">
-      <p className="text-center text-2xl text-white">
-        {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
-        {secretMessage && <span> - {secretMessage}</span>}
-      </p>
-      <button
-        className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-        onClick={sessionData ? () => void signOut() : () => void signIn()}
-      >
-        {sessionData ? "Sign out" : "Sign in"}
-      </button>
-    </div>
-  );
-};
