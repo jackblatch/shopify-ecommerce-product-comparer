@@ -8,7 +8,7 @@ import Image from "next/image";
 
 const Home: NextPage = () => {
   const getProductsFromDomTree = api.products.getProductsFromDomTree.useQuery(
-    { hostname: "enterdomain.com", searchTerm: "bicycle" },
+    { hostname: "domain.com", searchTerm: "wallet" },
     {
       refetchOnWindowFocus: false,
     }
