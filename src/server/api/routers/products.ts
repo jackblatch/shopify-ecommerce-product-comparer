@@ -3,18 +3,26 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import puppeteer from "puppeteer";
+import { hostname } from "os";
 
 export const productsRouter = createTRPCRouter({
   getProductsFromDomTree: publicProcedure
-    .input(z.object({ hostname: z.string(), searchTerm: z.string() }))
+    .input(
+      z.object({
+        hostname: z.array(z.string()).nullish(),
+        searchTerm: z.string(),
+      })
+    )
     .query(async ({ input }) => {
+      if (!input?.hostname) return [];
+      console.log({ hostname });
       // @TODO handle currency - set cart_currency cookie to USD for all requests or get currency from site
       const getProducts = async () => {
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
 
         await page.goto(
-          `https://${input.hostname}/search?type=product&options%5Bprefix%5D=last&q=${input.searchTerm}&limit=24`
+          `https://${input.hostname}/search?q=${input.searchTerm}&type=product&options%5Bprefix%5D=last&limit=24`
         );
 
         // Set screen size
@@ -80,7 +88,7 @@ export const productsRouter = createTRPCRouter({
             link: item.link,
             handle: json.product.handle,
             title: json.product.title,
-            image: json.product.image.src,
+            image: json.product.image.src + "?ref=shop-around",
             imageHeight: json.product.image.height,
             imageWidth: json.product.image.width,
             alt: json.product.image.alt,
@@ -99,7 +107,8 @@ export const productsRouter = createTRPCRouter({
 
       return getProducts()
         .then((res) => res)
-        .catch(() => {
+        .catch((err) => {
+          console.log("ERROR", err);
           throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
         });
     }),
