@@ -21,7 +21,7 @@ export const productsRouter = createTRPCRouter({
         await page.setViewport({ width: 1080, height: 1024 });
 
         const products = await page.evaluate(() => {
-          const cache: Record<string, any> = {};
+          const cache: Record<string, boolean> = {};
           const getData = (searchterm: string) => {
             return Array.from(document.getElementsByTagName("a")).map(
               (product) => {
@@ -37,11 +37,21 @@ export const productsRouter = createTRPCRouter({
               }
             );
           };
-          const productsArr = getData("?_pos=");
-          console.log("LENGTH", productsArr);
-          if (productsArr.length === 0) {
-            console.log("RUNNING VARIANT SEARCH");
-            return getData("?variant=");
+          let productsArr = getData("?_pos=");
+          console.log("LENGTH", productsArr.length);
+          if (
+            productsArr.filter((item) => item === null).length ===
+            productsArr.length
+          ) {
+            productsArr = getData("?variant=");
+          } else {
+            return productsArr;
+          }
+          if (
+            productsArr.filter((item) => item === null).length ===
+            productsArr.length
+          ) {
+            return getData("product");
           } else {
             return productsArr;
           }
