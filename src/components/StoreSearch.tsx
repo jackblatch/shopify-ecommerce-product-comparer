@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
+import GradientButton from "./GradientButton";
 import StoreInputs from "./StoreInputs";
 
 export default function StoreSearch() {
@@ -15,7 +16,7 @@ export default function StoreSearch() {
     e.preventDefault();
     console.log("susb");
     router.push(
-      "/search?q=" +
+      "/search/search-stores?q=" +
         JSON.stringify(
           Object.entries(searchTerm)
             .map((item) => {
@@ -32,21 +33,15 @@ export default function StoreSearch() {
 
   return (
     <>
-      <div className="w-full max-w-[500px] text-white">
-        <h3>SS</h3>
-        {/* <p className="text-white">ADD SEARCH INPUT HERE</p> */}
+      <div className="w-full max-w-[500px]">
         <form onSubmit={handleSubmit}>
-          <div className="mb-4 border-b border-white pb-2 text-white">
-            <h3 className="text-lg uppercase ">Stores to Search</h3>
-            <p>Enter the domain names below</p>
+          <div className="mb-4 border-b border-white pb-2">
+            <h2 className="mt-2 text-lg">
+              Enter the websites you'd like to search for this product below
+            </h2>
           </div>
           <StoreInputs searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-          <button
-            type="submit"
-            className="rounded-md bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 py-2 px-12 font-medium text-white"
-          >
-            Search
-          </button>
+          <GradientButton type="submit">Search</GradientButton>
         </form>
       </div>
     </>

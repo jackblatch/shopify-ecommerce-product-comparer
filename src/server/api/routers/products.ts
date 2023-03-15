@@ -9,7 +9,7 @@ export const productsRouter = createTRPCRouter({
   getProductsFromDomTree: publicProcedure
     .input(
       z.object({
-        hostname: z.array(z.string()).nullish(),
+        hostname: z.string().nullish(),
         searchTerm: z.string(),
       })
     )

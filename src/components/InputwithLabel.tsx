@@ -19,7 +19,10 @@ export default function InputwithLabel({
   return (
     <div>
       {label && (
-        <label htmlFor={id} className="block text-lg font-medium leading-6">
+        <label
+          htmlFor={id}
+          className="block text-lg font-medium leading-6 text-black"
+        >
           {label}
         </label>
       )}

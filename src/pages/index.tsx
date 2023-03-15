@@ -1,12 +1,16 @@
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
 import { type NextPage } from "next";
 import Head from "next/head";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
+import GradientButton from "~/components/GradientButton";
 import InputwithLabel from "~/components/InputwithLabel";
 import Logo from "~/components/Logo";
 import StoreSearch from "~/components/StoreSearch";
 
 const Home: NextPage = () => {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState<Record<string, string>>({
     search: "",
   });
@@ -21,7 +25,7 @@ const Home: NextPage = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="min-h-[100vh] justify-between gap-2 bg-[#13121B] px-4 py-12 sm:p-12">
+      <div className="min-h-[100vh] justify-between gap-2 bg-darkPurple px-4 py-12 sm:p-12">
         <div className="m-auto max-w-[1220px]">
           <Logo />
           <div className="mt-12 flex flex-col-reverse items-start justify-between gap-2 rounded-3xl bg-white p-6 md:flex-row md:p-16">
@@ -49,10 +53,12 @@ const Home: NextPage = () => {
                   state={searchTerm}
                   setState={setSearchTerm}
                 >
-                  <button className="flex w-full items-center justify-center gap-2 rounded-md bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 py-2 px-12 text-lg font-medium text-white md:w-fit">
-                    Next
-                    <ArrowRightIcon className="w-4" />
-                  </button>
+                  <Link href={`/search/select-stores?q=${searchTerm.search}`}>
+                    <GradientButton>
+                      Next
+                      <ArrowRightIcon className="w-4" />
+                    </GradientButton>
+                  </Link>
                 </InputwithLabel>
                 <p className="mt-2 text-sm text-gray-500">
                   Search for a product above to then enter your stores to search
