@@ -14,13 +14,13 @@ export default function StoreInputs({
 
   return (
     <div className="text-white">
-      <p>Enter the domain names below</p>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-2">
         {Array.from(Array(inputCount)).map((_, i) => (
           // @TODO wrap in component with children to allow minus buttons and inability to remove last element
           <InputwithLabel
             key={i}
-            label={`Store ${i}`}
+            label={`Store ${i + 1}`}
+            placeholder="Enter domain..."
             type="text"
             id={String(i + 1)}
             state={searchTerm}
@@ -28,7 +28,7 @@ export default function StoreInputs({
           />
         ))}
       </div>
-      <button className="my-6 flex w-full max-w-[500px] items-center justify-center rounded-md bg-[#272549] py-2">
+      <button className="my-6 flex w-full items-center justify-center rounded-md bg-[#272549] py-2">
         <div className="rounded-full bg-slate-900 p-1">
           <PlusIcon className="w-5 text-2xl font-bold" />
         </div>
