@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { Toaster } from "react-hot-toast";
 import Logo from "~/components/Logo";
 import StoreSearch from "~/components/StoreSearch";
 
@@ -25,6 +26,7 @@ export default function SelectStores() {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <Toaster />
       <div className="flex min-h-[100vh] animate-fade-in flex-col items-center justify-center">
         <Logo />
         <div className="mt-8 rounded-2xl bg-white p-12 text-black sm:w-[600px]">
