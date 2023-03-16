@@ -5,17 +5,47 @@ import { api } from "~/utils/api";
 
 export default function Explore() {
   const router = useRouter();
-  const [products, setProducts] = useState<Record<string, any>>({});
+  const [products, setProducts] = useState<any[]>([]);
+  const [stores, setStores] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const getProductsFromDomTree = api.products.getProductsFromDomTree.useQuery(
-    {
-      hostname: (router.query.q as string) ?? "",
-      searchTerm: "wallet",
-    },
-    {
-      refetchOnWindowFocus: false,
+  const getProductsFromDomTree =
+    api.products.getProductsFromDomTree.useMutation();
+
+  // useEffect(() => {
+  //   if (router.isReady) {
+  //     setStores(
+  //       String(router.query.q)
+  //         ?.substring(1, String(router.query.q).length - 1)
+  //         .split(",")
+  //     );
+  //   }
+  // }, [router]);
+
+  useEffect(() => {
+    if (stores.length === 0) {
+      const allProducts: any[] = [];
+      ["pipermagic.com.au", "globalmagicshop.com.au"].forEach(async (store) => {
+        await getProductsFromDomTree
+          .mutateAsync({
+            hostname: store,
+            searchTerm: "wallet",
+          })
+          .then((res) => allProducts.push(res));
+        // allProducts.push(data);
+      });
+      setProducts(allProducts);
+      setLoading(false);
     }
-  );
+  }, [stores]);
+
+  console.log({ products });
+
+  console.log("ARR", [
+    String(router.query.q)
+      ?.substring(1, String(router.query.q).length - 1)
+      .split(","),
+  ]);
 
   // @TODO: Use SAME query function in TRPC for each store, but with different hostname (may need to change to mutation instead).
   // Just passa string into each request
@@ -30,36 +60,38 @@ export default function Explore() {
   // Need to reuse same query function in TRPC for each one?
   // Domain.com above needs to be changed to the router.query params value
 
-  console.log(router.query);
-
   // useEffect(() => {
   //   if (router.isReady && !getProductsFromDomTree.data) {
   //     // GET DATA
   //   }
   // }, [router]);
 
-  console.log(getProductsFromDomTree.data);
+  console.log(getProductsFromDomTree);
 
   if (getProductsFromDomTree.isLoading) {
     return <div>Loading...</div>;
   }
+
+  // @TODO show error message if error is true
+
   return (
     <>
       <h1>Explore</h1>
       <div className="grid grid-cols-5 gap-2">
-        {getProductsFromDomTree.data?.map((product) => {
-          if (!product) return "";
-          return (
-            <div key={product.id}>
-              <Image
-                src={product.image}
-                alt={product.alt ?? product.title}
-                width={product.imageWidth}
-                height={product.imageHeight}
-              />
-              <h1>{product.title}</h1>
-            </div>
-          );
+        {products.map((store) => {
+          return store.map((product: Record<string, any>) => {
+            return (
+              <div key={product.id}>
+                <img
+                  src={product.image}
+                  alt={product.title}
+                  width={product.imageWidth}
+                  height={product.imageHeight}
+                />
+                <h1>{product.title}</h1>
+              </div>
+            );
+          });
         })}
       </div>
     </>

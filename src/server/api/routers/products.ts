@@ -13,7 +13,7 @@ export const productsRouter = createTRPCRouter({
         searchTerm: z.string(),
       })
     )
-    .query(async ({ input }) => {
+    .mutation(async ({ input }) => {
       if (!input?.hostname) return [];
       console.log({ hostname });
       // @TODO handle currency - set cart_currency cookie to USD for all requests or get currency from site
@@ -85,10 +85,10 @@ export const productsRouter = createTRPCRouter({
           return {
             id: json.product.id,
             hostname: item.hostname,
-            link: item.link,
+            link: item.link + "?ref=shop-around",
             handle: json.product.handle,
             title: json.product.title,
-            image: json.product.image.src + "?ref=shop-around",
+            image: json.product.image.src,
             imageHeight: json.product.image.height,
             imageWidth: json.product.image.width,
             alt: json.product.image.alt,
