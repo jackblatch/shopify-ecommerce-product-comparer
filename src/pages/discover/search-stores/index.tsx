@@ -13,8 +13,8 @@ export default function Explore() {
 
   useEffect(() => {
     if (router.isReady) {
-      const doubleStringedArr = String(router.query.q)
-        ?.substring(1, String(router.query.q).length - 1)
+      const doubleStringedArr = String(router.query.stores)
+        ?.substring(1, String(router.query.stores).length - 1)
         .split(",");
       const newArr = doubleStringedArr.map((item) =>
         item.substring(1, item.length - 1)
@@ -24,19 +24,19 @@ export default function Explore() {
   }, [router]);
 
   useEffect(() => {
-    if (stores.length > 0) {
+    if (stores.length > 0 && router.isReady) {
       const allProducts: any[] = [];
       stores.forEach(async (store) => {
         await getProductsFromDomTree
           .mutateAsync({
             hostname: store,
-            searchTerm: "wallet",
+            searchTerm: router.query.q as string,
           })
           .then((res) => allProducts.push(res));
       });
       setProducts(allProducts);
     }
-  }, [stores]);
+  }, [stores, router]);
 
   if (getProductsFromDomTree.isLoading) {
     return (
@@ -51,6 +51,10 @@ export default function Explore() {
 
   if (getProductsFromDomTree.isError) {
     return <div>Error</div>;
+  }
+
+  if (router.isReady && !router.query.q) {
+    return <p>No search term</p>;
   }
 
   return (

@@ -53,7 +53,7 @@ const Home: NextPage = () => {
                   state={searchTerm}
                   setState={setSearchTerm}
                 >
-                  <Link href={`/search/select-stores?q=${searchTerm.search}`}>
+                  <Link href={`/discover/select-stores?q=${searchTerm.search}`}>
                     <GradientButton>
                       Next
                       <ArrowRightIcon className="w-4" />

@@ -12,9 +12,10 @@ export default function SelectStores() {
     return <p className="">Loading...</p>;
   }
 
-  // if (router.isReady && !router.query.q) {
-  //   router.push("/"); // // @TODO: This is causing hydration bug
-  // }
+  if (router.isReady && !router.query.q) {
+    // router.push("/"); // // @TODO: This is causing hydration bug
+    return <p>No search term</p>;
+  }
 
   return (
     <>

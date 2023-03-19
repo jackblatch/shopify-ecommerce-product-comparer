@@ -5,7 +5,7 @@ import StoreInputs from "./StoreInputs";
 
 export default function StoreSearch() {
   const router = useRouter();
-  const [searchTerm, setSearchTerm] = useState<Record<string, string>>({
+  const [selectedStores, setSelectedStores] = useState<Record<string, string>>({
     1: "",
     2: "",
     3: "",
@@ -16,9 +16,11 @@ export default function StoreSearch() {
     e.preventDefault();
     console.log("susb");
     router.push(
-      "/search/search-stores?q=" +
+      "/discover/search-stores?q=" +
+        router.query.q +
+        "&stores=" +
         JSON.stringify(
-          Object.entries(searchTerm)
+          Object.entries(selectedStores)
             .map((item) => {
               if (item[1] !== "") {
                 return item[1];
@@ -40,8 +42,16 @@ export default function StoreSearch() {
               Enter the websites you'd like to search for this product below
             </h2>
           </div>
-          <StoreInputs searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-          <GradientButton type="submit">Search</GradientButton>
+          <StoreInputs
+            selectedStores={selectedStores}
+            setSelectedStores={setSelectedStores}
+          />
+          <GradientButton
+            type="submit"
+            disabled={router.query.q ? false : true}
+          >
+            Search
+          </GradientButton>
         </form>
       </div>
     </>
