@@ -1,6 +1,5 @@
 import { MinusCircleIcon, PlusIcon } from "@heroicons/react/24/solid";
-import { useRouter } from "next/router";
-import { FormEvent, useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
 import InputwithLabel from "./InputwithLabel";
 
@@ -19,8 +18,7 @@ export default function StoreInputs({
     <div className="text-white">
       <div className="flex flex-col gap-6">
         {Array.from(Array(inputCount)).map((_, i) => (
-          // @TODO wrap in component with children to allow minus buttons and inability to remove last element
-          <div className="flex items-center justify-center gap-2" key={i}>
+          <div className="relative" key={i}>
             <div className="flex-1">
               <InputwithLabel
                 label={`Store ${i + 1}`}
@@ -31,24 +29,29 @@ export default function StoreInputs({
                 setState={setSelectedStores}
               />
             </div>
-            <button
-              type="button"
-              onClick={() => {
-                const newSelectedStores = { ...selectedStores };
-              }}
-            >
-              <MinusCircleIcon className="mt-8 w-6 text-red-500" />
-            </button>
+            {i > 0 && i + 1 === inputCount ? (
+              <button
+                className="absolute right-2 top-3"
+                type="button"
+                onClick={() => {
+                  const newSelectedStores = { ...selectedStores };
+                  newSelectedStores[i + 1] = "";
+                  setInputCount((prev) => prev - 1);
+                }}
+              >
+                <MinusCircleIcon className="mt-8 w-6 text-red-500" />
+              </button>
+            ) : null}
           </div>
         ))}
       </div>
       <button
         type="button"
         onClick={() => {
-          inputCount < 6
+          inputCount < 4
             ? setInputCount((prev) => prev + 1)
             : toast.error(
-                "You can only add up to 6 stores in a single search",
+                "You can only add up to 4 stores in a single search",
                 {
                   position: "bottom-right",
                 }

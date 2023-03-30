@@ -1,6 +1,5 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import Logo from "~/components/Logo";
 import StoreSearch from "~/components/StoreSearch";

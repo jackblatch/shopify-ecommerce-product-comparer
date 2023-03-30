@@ -16,7 +16,7 @@ export default function StoreSearch() {
     e.preventDefault();
     console.log("susb");
     router.push(
-      "/discover/search-stores?q=" +
+      "/discover/search?q=" +
         router.query.q +
         "&stores=" +
         JSON.stringify(
