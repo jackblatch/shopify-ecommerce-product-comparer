@@ -4,8 +4,19 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import puppeteer from "puppeteer";
 import { hostname } from "os";
+import { exploreResponseMockData } from "~/exploreResponseMockData";
 
 export const productsRouter = createTRPCRouter({
+  mockData: publicProcedure
+    .input(
+      z.object({
+        hostname: z.string().nullish(),
+        searchTerm: z.string(),
+      })
+    )
+    .mutation(async () => {
+      return exploreResponseMockData;
+    }),
   getProductsFromDomTree: publicProcedure
     .input(
       z.object({
@@ -46,7 +57,7 @@ export const productsRouter = createTRPCRouter({
             );
           };
           let productsArr = getData("?_pos=");
-          console.log("LENGTH", productsArr.length);
+
           if (
             productsArr.filter((item) => item === null).length ===
             productsArr.length
@@ -55,6 +66,7 @@ export const productsRouter = createTRPCRouter({
           } else {
             return productsArr;
           }
+
           if (
             productsArr.filter((item) => item === null).length ===
             productsArr.length

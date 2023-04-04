@@ -1,7 +1,6 @@
 export default function CheckboxWithLabel({
   id,
   name,
-  type,
   label,
   state,
   setState,
@@ -10,6 +9,8 @@ export default function CheckboxWithLabel({
   id: string;
   name: string;
   label: string;
+  state: Record<string, any>;
+  setState: React.Dispatch<React.SetStateAction<Record<string, any>>>;
   [x: string]: any;
 }) {
   return (
@@ -20,7 +21,7 @@ export default function CheckboxWithLabel({
             id={id}
             name={name}
             type="checkbox"
-            value={state[id]}
+            checked={state[id]}
             onChange={(e) => {
               setState({ ...state, [id]: e.target.checked });
             }}

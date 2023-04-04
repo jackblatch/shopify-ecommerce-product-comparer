@@ -10,11 +10,11 @@ import { api } from "~/utils/api";
 export default function Explore() {
   const router = useRouter();
   const [products, setProducts] = useState<any[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
   const [stores, setStores] = useState<any[]>([]);
-  const [selectedStores, setSelectedStores] = useState({});
+  const [selectedStores, setSelectedStores] = useState<any>({});
 
-  const getProductsFromDomTree =
-    api.products.getProductsFromDomTree.useMutation();
+  const getProductsFromDomTree = api.products.mockData.useMutation();
 
   useEffect(() => {
     if (router.isReady) {
@@ -25,6 +25,13 @@ export default function Explore() {
         item.substring(1, item.length - 1)
       );
       setStores(newArr);
+      setSelectedStores(() => {
+        const obj: any = {};
+        newArr.forEach((store) => {
+          obj[store] = true;
+        });
+        return obj;
+      });
     }
   }, [router]);
 
@@ -40,8 +47,29 @@ export default function Explore() {
           .then((res) => allProducts.push(res));
       });
       setProducts(allProducts);
+      setFilteredProducts(allProducts);
     }
   }, [stores, router]);
+
+  useEffect(() => {
+    // console.log(Object.entries(selectedStores));
+    console.log({ selectedStores });
+    // if (Object.entries(selectedStores).length === 0) return;
+    setFilteredProducts(() => {
+      const newFilteredProducts: any[] = [];
+      Object.entries(selectedStores).forEach((store) => {
+        if (store[1]) {
+          products.forEach((product) => {
+            if (product[0].hostname === store[0]) {
+              newFilteredProducts.push(product);
+            }
+          });
+        }
+      });
+      console.log(filteredProducts);
+      return newFilteredProducts;
+    });
+  }, [selectedStores]);
 
   if (getProductsFromDomTree.isLoading) {
     return (
@@ -65,27 +93,38 @@ export default function Explore() {
   return (
     <div className="bg-white">
       <NavBar />
-      <h1 className="font-2xl text-center font-medium text-black">Explore</h1>
-      <div className="m-auto grid grid-cols-12">
-        <div className="col-span-2">
-          <h2>Stores</h2>
-          <FieldSet legend="stores">
-            {stores.map((store) => {
-              return (
-                <CheckboxWithLabel label={store} name={store} id={store} />
-              );
-            })}
-          </FieldSet>
+      <h1 className="mt-8 text-center text-3xl font-medium text-black">
+        Explore
+      </h1>
+      <div className="m-auto grid max-w-[1600px] grid-cols-12">
+        <div className="col-span-2 p-12">
+          <div className="sticky top-10">
+            <h2 className="text-xl text-black ">Stores</h2>
+            <FieldSet legend="stores">
+              {stores.map((store) => {
+                return (
+                  <CheckboxWithLabel
+                    key={store}
+                    label={store}
+                    name={store}
+                    id={store}
+                    state={selectedStores}
+                    setState={setSelectedStores}
+                  />
+                );
+              })}
+            </FieldSet>
+          </div>
         </div>
-        <div className="col-span-10 m-auto grid max-w-[1200px] grid-cols-1 gap-6 p-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {products.map((store) => {
+        <div className="col-span-10 m-auto grid grid-cols-1 gap-6 p-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {filteredProducts.map((store) => {
             return store.map((product: Record<string, any>) => {
               return (
                 <div
                   key={product.id}
                   className="flex flex-col items-center rounded-md bg-white p-4 text-black shadow"
                 >
-                  <div className="justify-centerobject-contain flex flex-1 items-center">
+                  <div className="flex flex-1 items-center justify-center object-contain">
                     <a href={product.link}>
                       <Image
                         src={product.image}
@@ -97,8 +136,11 @@ export default function Explore() {
                   </div>
                   <div>
                     <h1 className="text-lg font-bold">{product.title}</h1>
-                    <h3>{product.variants[0].price} (store currency)</h3>
-                    <p>Store: {product.hostname}</p>
+                    <h3>
+                      {product.variants[0].price}{" "}
+                      <span className="text-sm">(store currency)</span>
+                    </h3>
+                    <p className="text-sm">{product.hostname}</p>
                   </div>
                 </div>
               );

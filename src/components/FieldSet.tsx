@@ -6,7 +6,7 @@ export default function FieldSet({
 }: PropsWithChildren<{ legend: string }>) {
   return (
     <fieldset>
-      <legend className="sr-only">Stores</legend>
+      <legend className="sr-only">{legend}</legend>
       {children}
     </fieldset>
   );

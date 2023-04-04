@@ -7,7 +7,6 @@ import { useState } from "react";
 import GradientButton from "~/components/GradientButton";
 import InputwithLabel from "~/components/InputwithLabel";
 import Logo from "~/components/Logo";
-import StoreSearch from "~/components/StoreSearch";
 
 const Home: NextPage = () => {
   const router = useRouter();
