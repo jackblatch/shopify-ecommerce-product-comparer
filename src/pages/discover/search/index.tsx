@@ -51,10 +51,13 @@ export default function Explore() {
     }
   }, [stores, router]);
 
+  console.log("filteredProducts", filteredProducts);
+  console.log("prods", products);
+
   useEffect(() => {
-    // console.log(Object.entries(selectedStores));
-    console.log({ selectedStores });
-    // if (Object.entries(selectedStores).length === 0) return;
+    if (Object.entries(selectedStores).length === 0 || products.length === 0) {
+      return;
+    }
     setFilteredProducts(() => {
       const newFilteredProducts: any[] = [];
       Object.entries(selectedStores).forEach((store) => {
@@ -66,10 +69,9 @@ export default function Explore() {
           });
         }
       });
-      console.log(filteredProducts);
       return newFilteredProducts;
     });
-  }, [selectedStores]);
+  }, [selectedStores, products]);
 
   if (getProductsFromDomTree.isLoading) {
     return (
