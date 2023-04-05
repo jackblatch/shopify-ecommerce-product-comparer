@@ -14,7 +14,8 @@ export default function Explore() {
   const [stores, setStores] = useState<any[]>([]);
   const [selectedStores, setSelectedStores] = useState<any>({});
 
-  const getProductsFromDomTree = api.products.mockData.useMutation();
+  const getProductsFromDomTree =
+    api.products.getProductsFromDomTree.useMutation();
 
   useEffect(() => {
     if (router.isReady) {

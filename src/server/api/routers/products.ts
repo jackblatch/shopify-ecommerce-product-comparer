@@ -89,6 +89,7 @@ export const productsRouter = createTRPCRouter({
         await browser.close();
 
         const allProducts = products.map(async (item) => {
+          const WWWPrefix = /^www\./i;
           if (!item) return null;
           const link = item.link.split("?")[0];
           const productJSONLink = `${link}.json`;
@@ -96,7 +97,7 @@ export const productsRouter = createTRPCRouter({
           const json = await data.json();
           return {
             id: json.product.id,
-            hostname: item.hostname,
+            hostname: item.hostname.replace(WWWPrefix, ""),
             link: item.link + "?ref=shop-around",
             handle: json.product.handle,
             title: json.product.title,

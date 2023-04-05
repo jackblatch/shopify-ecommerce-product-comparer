@@ -23,7 +23,8 @@ export default function StoreSearch() {
           Object.entries(selectedStores)
             .map((item) => {
               if (item[1] !== "") {
-                return item[1];
+                const WWWPrefix = /^www\./i;
+                return item[1].replace(WWWPrefix, "");
               } else {
                 return null;
               }
