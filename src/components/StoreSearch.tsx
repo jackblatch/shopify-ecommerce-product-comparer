@@ -43,23 +43,26 @@ export default function StoreSearch() {
       return;
     }
 
-    router.push(
-      "/discover/search?q=" +
-        router.query.q +
-        "&stores=" +
-        JSON.stringify(
-          Object.entries(selectedStores)
-            .map((item) => {
-              if (item[1] !== "") {
-                const WWWPrefix = /^www\./i;
-                return item[1].replace(WWWPrefix, "");
-              } else {
-                return null;
-              }
-            })
-            .filter((item) => item !== null)
-        )
-    );
+    const changePage = async () => {
+      await router.push(
+        "/discover/search?q=" +
+          String(router.query.q) +
+          "&stores=" +
+          JSON.stringify(
+            Object.entries(selectedStores)
+              .map((item) => {
+                if (item[1] !== "") {
+                  const WWWPrefix = /^www\./i;
+                  return item[1].replace(WWWPrefix, "");
+                } else {
+                  return null;
+                }
+              })
+              .filter((item) => item !== null)
+          )
+      );
+    };
+    changePage() as unknown as void;
   };
 
   return (
@@ -67,7 +70,7 @@ export default function StoreSearch() {
       <form onSubmit={handleSubmit}>
         <div className="mb-4 border-b border-white pb-2">
           <h2 className="mt-2 text-lg">
-            Enter the websites you'd like to search for this product below.
+            Enter the websites you&apos;d like to search for this product below.
           </h2>
         </div>
         <StoreInputs

@@ -1,8 +1,5 @@
-import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { LoaderIcon } from "react-hot-toast";
 import CenteredCardWrapper from "~/components/CentredCardWrapper";
 import CheckboxWithLabel from "~/components/CheckboxWithLabel";
 import FieldSet from "~/components/FieldSet";
@@ -10,13 +7,18 @@ import LoadingSpinner from "~/components/LoadingSpinner";
 import NavBar from "~/components/NavBar";
 import StoreSearchError from "~/components/StoreSearchError";
 import { api } from "~/utils/api";
+import { type ProductType } from "~/utils/types";
+
+type SelectedStoresType = Record<string, boolean>;
 
 export default function Explore() {
   const router = useRouter();
-  const [products, setProducts] = useState<any[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
-  const [stores, setStores] = useState<any[]>([]);
-  const [selectedStores, setSelectedStores] = useState<any>({});
+  const [products, setProducts] = useState<Array<ProductType[]>>([]);
+  const [filteredProducts, setFilteredProducts] = useState<
+    Array<ProductType[]>
+  >([]);
+  const [stores, setStores] = useState<string[]>([]);
+  const [selectedStores, setSelectedStores] = useState<SelectedStoresType>({});
 
   const getProductsFromDomTree =
     api.products.getProductsFromDomTree.useMutation();
@@ -31,7 +33,7 @@ export default function Explore() {
       );
       setStores(newArr);
       setSelectedStores(() => {
-        const obj: any = {};
+        const obj: SelectedStoresType = {};
         newArr.forEach((store) => {
           obj[store] = true;
         });
@@ -41,21 +43,24 @@ export default function Explore() {
   }, [router]);
 
   useEffect(() => {
+    // if (products.length > 0) return;
     if (stores.length > 0 && router.isReady) {
-      const allProducts: any[] = [];
-      stores.forEach(async (store) => {
-        await getProductsFromDomTree
-          .mutateAsync({
-            hostname: "https://" + store,
-            searchTerm: router.query.q as string,
-          })
-          .then((res) => allProducts.push(res))
-          .catch((err) => console.log(err));
+      const allProducts: Array<ProductType[]> = [];
+      stores.forEach((store) => {
+        (async () => {
+          await getProductsFromDomTree
+            .mutateAsync({
+              hostname: "https://" + store,
+              searchTerm: router.query.q as string,
+            })
+            .then((res) => allProducts.push(res as unknown as ProductType[]))
+            .catch((err) => console.log(err));
+        })() as unknown as void;
       });
       setProducts(allProducts);
       setFilteredProducts(allProducts);
     }
-  }, [stores, router]);
+  }, [stores, router, getProductsFromDomTree]);
 
   console.log("filteredProducts", filteredProducts);
   console.log("prods", products);
@@ -65,11 +70,11 @@ export default function Explore() {
       return;
     }
     setFilteredProducts(() => {
-      const newFilteredProducts: any[] = [];
+      const newFilteredProducts: Array<ProductType[]> = [];
       Object.entries(selectedStores).forEach((store) => {
         if (store[1]) {
           products.forEach((product) => {
-            if (product[0].hostname === store[0]) {
+            if (product[0]?.hostname === store[0]) {
               newFilteredProducts.push(product);
             }
           });
@@ -84,7 +89,9 @@ export default function Explore() {
       <CenteredCardWrapper>
         <div className="flex flex-col items-center justify-center gap-4 text-center">
           <LoadingSpinner />
-          <h2 className="my-0">Hang tight, we're loading your search...</h2>
+          <h2 className="my-0">
+            Hang tight, we&apos;re loading your search...
+          </h2>
           <p>
             Our robots behind the scenes are busy visiting the stores and
             searching for your product.
@@ -99,7 +106,11 @@ export default function Explore() {
   }
 
   if (router.isReady && !router.query.q) {
-    return <p>No search term</p>;
+    return (
+      <CenteredCardWrapper>
+        <p>No search term</p>
+      </CenteredCardWrapper>
+    );
   }
 
   return (
@@ -107,7 +118,7 @@ export default function Explore() {
       <NavBar />
       <h1 className="mt-8 text-center text-3xl font-medium text-black">
         Searching for{" "}
-        <span className="text-indigo-500">"{router.query.q}"</span>
+        <span className="text-indigo-500">&quot{router.query.q}&quot</span>
       </h1>
       <div className="m-auto grid max-w-[1600px] grid-cols-12">
         <div className="col-span-2 p-12">
@@ -131,7 +142,7 @@ export default function Explore() {
         </div>
         <div className="col-span-10 m-auto grid grid-cols-1 gap-6 p-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {filteredProducts.map((store) => {
-            return store.map((product: Record<string, any>) => {
+            return store.map((product) => {
               return (
                 <div
                   key={product.id}
@@ -163,7 +174,7 @@ export default function Explore() {
                       </h4>
                     </a>
                     <h5 className="text-sm">
-                      {product.variants[0].price}{" "}
+                      {product.variants[0]?.price}{" "}
                       <span className="text-sm">(store currency)</span>
                     </h5>
                     <p className="text-sm">{product.hostname}</p>

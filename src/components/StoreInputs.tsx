@@ -1,6 +1,4 @@
 import { MinusCircleIcon, PlusIcon } from "@heroicons/react/24/solid";
-import { useState } from "react";
-import { toast } from "react-hot-toast";
 import InputwithLabel from "./InputwithLabel";
 
 export default function StoreInputs({

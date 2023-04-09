@@ -4,6 +4,7 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import puppeteer from "puppeteer";
 import { hostname } from "os";
+import { type ProductType } from "~/utils/types";
 
 export const productsRouter = createTRPCRouter({
   getProductsFromDomTree: publicProcedure
@@ -22,7 +23,9 @@ export const productsRouter = createTRPCRouter({
         const page = await browser.newPage();
 
         await page.goto(
-          `${input.hostname}/search?q=${input.searchTerm}&type=product&options%5Bprefix%5D=last&limit=24`,
+          `${String(input.hostname)}/search?q=${String(
+            input.searchTerm
+          )}&type=product&options%5Bprefix%5D=last&limit=24`,
           {
             waitUntil: "load",
             timeout: 10000,
@@ -72,31 +75,45 @@ export const productsRouter = createTRPCRouter({
 
         await browser.close();
 
-        const allProducts = products.map(async (item) => {
-          const WWWPrefix = /^www\./i;
-          if (!item) return null;
-          const link = item.link.split("?")[0];
-          const productJSONLink = `${link}.json`;
-          const data = await fetch(productJSONLink);
-          const json = await data.json();
-          return {
-            id: json.product.id,
-            hostname: item.hostname.replace(WWWPrefix, ""),
-            link: item.link + "?ref=quickshop",
-            handle: json.product.handle,
-            title: json.product.title,
-            image: json.product.image?.src,
-            imageHeight: json.product.image?.height,
-            imageWidth: json.product.image?.width,
-            alt: json.product.image?.alt,
-            variants: json.product.variants.map((variant: any) => ({
-              id: variant.id,
-              sku: variant?.sku,
-              title: variant.title,
-              price: variant.price,
-            })),
-          };
-        });
+        const allProducts: Promise<ProductType | null>[] = products.map(
+          async (item) => {
+            const WWWPrefix = /^www\./i;
+            if (!item) return null;
+            const link = item.link.split("?")[0] as string;
+            const productJSONLink = `${link}.json`;
+            const data = await fetch(productJSONLink);
+            const json = (await data.json()) as {
+              product: Exclude<
+                ProductType,
+                "image" | "imageHeight" | "imageWidth" | "alt"
+              > & {
+                image: {
+                  src: string;
+                  height: string;
+                  width: string;
+                  alt: string;
+                };
+              };
+            };
+            return {
+              id: json.product.id,
+              hostname: item.hostname.replace(WWWPrefix, ""),
+              link: item.link + "?ref=quickshop",
+              handle: json.product.handle,
+              title: json.product.title,
+              image: json.product.image?.src,
+              imageHeight: json.product.image?.height,
+              imageWidth: json.product.image?.width,
+              alt: json.product.image?.alt,
+              variants: json.product.variants.map((variant) => ({
+                id: variant.id,
+                sku: variant?.sku,
+                title: variant.title,
+                price: variant.price,
+              })),
+            };
+          }
+        );
         return Promise.all(allProducts).then((res) =>
           res.filter((item) => item)
         );

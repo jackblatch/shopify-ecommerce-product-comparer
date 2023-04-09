@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import { type PropsWithChildren } from "react";
 
 export default function GradientButton({
   children,
@@ -6,7 +6,7 @@ export default function GradientButton({
   ...delegated
 }: PropsWithChildren<{
   type?: "button" | "submit" | "reset";
-  [x: string]: any;
+  [x: string]: unknown;
 }>) {
   return (
     <button

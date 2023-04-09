@@ -17,15 +17,15 @@ export default function StoreSearchError() {
       <ul className="list-inside list-disc">
         <li>The store must be a Shopify store</li>
         <li>The store must be accessible to the public</li>
-        <li>The store's search page must be accessible at /search</li>
+        <li>The store&apos;s search page must be accessible at /search</li>
         <li>
-          The store's search results page must list products with links
+          The store&apos;s search results page must list products with links
           containing either &apos;product&apos;, &apos;?_pos=&apos; or
           &apos;?variant=&apos;
         </li>
       </ul>
       <div className="mt-10">
-        <Link href={`/discover/select-stores?q=${router.query.q}`}>
+        <Link href={`/discover/select-stores?q=${String(router.query.q)}`}>
           <Button>
             <div className="flex items-center justify-center gap-2">
               <ArrowLeftIcon className="h-4 w-4" />
