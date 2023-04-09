@@ -2,8 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { LoaderIcon } from "react-hot-toast";
+import CenteredCardWrapper from "~/components/CentredCardWrapper";
 import CheckboxWithLabel from "~/components/CheckboxWithLabel";
 import FieldSet from "~/components/FieldSet";
+import LoadingSpinner from "~/components/LoadingSpinner";
 import NavBar from "~/components/NavBar";
 import StoreSearchError from "~/components/StoreSearchError";
 import { api } from "~/utils/api";
@@ -78,12 +81,16 @@ export default function Explore() {
 
   if (getProductsFromDomTree.isLoading) {
     return (
-      <>
-        <p>Loading...</p>
-        <p>Visiting stores...</p>
-        <p>Searching stores...</p>
-        <p>Collecting product information...</p>
-      </>
+      <CenteredCardWrapper>
+        <div className="flex flex-col items-center justify-center gap-4 text-center">
+          <LoadingSpinner />
+          <h2 className="my-0">Hang tight, we're loading your search...</h2>
+          <p>
+            Our robots behind the scenes are busy visiting the stores and
+            searching for your product.
+          </p>
+        </div>
+      </CenteredCardWrapper>
     );
   }
 
@@ -96,7 +103,7 @@ export default function Explore() {
   }
 
   return (
-    <div className="bg-gray-50">
+    <div className="h-full min-h-screen bg-gray-100">
       <NavBar />
       <h1 className="mt-8 text-center text-3xl font-medium text-black">
         Searching for{" "}
@@ -128,7 +135,7 @@ export default function Explore() {
               return (
                 <div
                   key={product.id}
-                  className="flex flex-col items-start gap-4 rounded-md bg-white p-4 text-black shadow"
+                  className="flex flex-col items-start gap-4 rounded-md border border-gray-300 bg-white p-4 text-black"
                 >
                   <div className="flex items-center justify-start">
                     <a

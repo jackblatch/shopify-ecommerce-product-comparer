@@ -63,34 +63,32 @@ export default function StoreSearch() {
   };
 
   return (
-    <>
-      <div className="w-full max-w-[500px]">
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4 border-b border-white pb-2">
-            <h2 className="mt-2 text-lg">
-              Enter the websites you'd like to search for this product below.
-            </h2>
-          </div>
-          <StoreInputs
-            inputCount={inputCount}
-            setInputCount={setInputCount}
-            selectedStores={selectedStores}
-            setSelectedStores={setSelectedStores}
-          />
-          <div className="mt-6">
-            <GradientButton
-              type="submit"
-              disabled={
-                !router.query.q || Object.values(selectedStores)[0] === ""
-                  ? true
-                  : false
-              }
-            >
-              Search
-            </GradientButton>
-          </div>
-        </form>
-      </div>
-    </>
+    <div className="w-full max-w-[500px]">
+      <form onSubmit={handleSubmit}>
+        <div className="mb-4 border-b border-white pb-2">
+          <h2 className="mt-2 text-lg">
+            Enter the websites you'd like to search for this product below.
+          </h2>
+        </div>
+        <StoreInputs
+          inputCount={inputCount}
+          setInputCount={setInputCount}
+          selectedStores={selectedStores}
+          setSelectedStores={setSelectedStores}
+        />
+        <div className="mt-6">
+          <GradientButton
+            type="submit"
+            disabled={
+              !router.query.q || Object.values(selectedStores)[0] === ""
+                ? true
+                : false
+            }
+          >
+            Search
+          </GradientButton>
+        </div>
+      </form>
+    </div>
   );
 }

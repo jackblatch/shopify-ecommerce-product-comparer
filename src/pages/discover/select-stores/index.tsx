@@ -1,6 +1,10 @@
+import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import Head from "next/head";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { Toaster } from "react-hot-toast";
+import Button from "~/components/Button";
+import CenteredCardWrapper from "~/components/CentredCardWrapper";
 import Logo from "~/components/Logo";
 import StoreSearch from "~/components/StoreSearch";
 
@@ -13,7 +17,19 @@ export default function SelectStores() {
 
   if (router.isReady && !router.query.q) {
     // router.push("/"); // // @TODO: This is causing hydration bug
-    return <p>No search term</p>;
+    return (
+      <CenteredCardWrapper>
+        <p>No search term</p>
+        <Link href={`/discover/select-stores?q=${router.query.q}`}>
+          <Button>
+            <div className="flex items-center justify-center gap-2">
+              <ArrowLeftIcon className="h-4 w-4" />
+              <span>Go back</span>
+            </div>
+          </Button>
+        </Link>
+      </CenteredCardWrapper>
+    );
   }
 
   return (

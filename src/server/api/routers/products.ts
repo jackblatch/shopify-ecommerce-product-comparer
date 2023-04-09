@@ -33,7 +33,11 @@ export const productsRouter = createTRPCRouter({
         const page = await browser.newPage();
 
         await page.goto(
-          `${input.hostname}/search?q=${input.searchTerm}&type=product&options%5Bprefix%5D=last&limit=24`
+          `${input.hostname}/search?q=${input.searchTerm}&type=product&options%5Bprefix%5D=last&limit=24`,
+          {
+            waitUntil: "load",
+            timeout: 10000,
+          }
         );
 
         // Set screen size
