@@ -4,19 +4,8 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import puppeteer from "puppeteer";
 import { hostname } from "os";
-import { exploreResponseMockData } from "~/exploreResponseMockData";
 
 export const productsRouter = createTRPCRouter({
-  mockData: publicProcedure
-    .input(
-      z.object({
-        hostname: z.string().nullish(),
-        searchTerm: z.string(),
-      })
-    )
-    .mutation(async () => {
-      return exploreResponseMockData;
-    }),
   getProductsFromDomTree: publicProcedure
     .input(
       z.object({
