@@ -20,7 +20,7 @@ export const productsRouter = createTRPCRouter({
   getProductsFromDomTree: publicProcedure
     .input(
       z.object({
-        hostname: z.string().nullish(),
+        hostname: z.string().url().nullish(),
         searchTerm: z.string(),
       })
     )
@@ -33,7 +33,7 @@ export const productsRouter = createTRPCRouter({
         const page = await browser.newPage();
 
         await page.goto(
-          `https://${input.hostname}/search?q=${input.searchTerm}&type=product&options%5Bprefix%5D=last&limit=24`
+          `${input.hostname}/search?q=${input.searchTerm}&type=product&options%5Bprefix%5D=last&limit=24`
         );
 
         // Set screen size
@@ -77,15 +77,6 @@ export const productsRouter = createTRPCRouter({
           }
         });
 
-        // let products = await getProducts("?_pos=");
-
-        // if (products.length === 0) {
-        // WIP: need to re-run above function with ?variant= string for includes instead
-        // example: needs to be done to support older shopify stores e.g. PM site
-        // then as a third fallback, get all urls with 'products' in URL. Implement max results.
-        // need to run before map below runs. map should only run on successful completion
-        // }
-
         await browser.close();
 
         const allProducts = products.map(async (item) => {
@@ -98,7 +89,7 @@ export const productsRouter = createTRPCRouter({
           return {
             id: json.product.id,
             hostname: item.hostname.replace(WWWPrefix, ""),
-            link: item.link + "?ref=shop-around",
+            link: item.link + "?ref=quickshop",
             handle: json.product.handle,
             title: json.product.title,
             image: json.product.image.src,

@@ -42,10 +42,11 @@ export default function Explore() {
       stores.forEach(async (store) => {
         await getProductsFromDomTree
           .mutateAsync({
-            hostname: store,
+            hostname: "https://" + store,
             searchTerm: router.query.q as string,
           })
-          .then((res) => allProducts.push(res));
+          .then((res) => allProducts.push(res))
+          .catch((err) => console.log(err));
       });
       setProducts(allProducts);
       setFilteredProducts(allProducts);
@@ -86,7 +87,7 @@ export default function Explore() {
   }
 
   if (getProductsFromDomTree.isError) {
-    return <div>Error</div>;
+    return <p>Error</p>;
   }
 
   if (router.isReady && !router.query.q) {
@@ -94,10 +95,11 @@ export default function Explore() {
   }
 
   return (
-    <div className="bg-white">
+    <div className="bg-gray-50">
       <NavBar />
       <h1 className="mt-8 text-center text-3xl font-medium text-black">
-        Explore
+        Searching for{" "}
+        <span className="text-indigo-500">"{router.query.q}"</span>
       </h1>
       <div className="m-auto grid max-w-[1600px] grid-cols-12">
         <div className="col-span-2 p-12">
@@ -125,11 +127,16 @@ export default function Explore() {
               return (
                 <div
                   key={product.id}
-                  className="flex flex-col items-center rounded-md bg-white p-4 text-black shadow"
+                  className="flex flex-col items-start gap-4 rounded-md bg-white p-4 text-black shadow"
                 >
-                  <div className="flex flex-1 items-center justify-center object-contain">
-                    <a href={product.link}>
-                      <Image
+                  <div className="flex items-center justify-start">
+                    <a
+                      href={product.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="h-[200px] w-full overflow-hidden object-contain"
+                    >
+                      <img
                         src={product.image}
                         alt={product.title}
                         width={product.imageWidth}
@@ -138,11 +145,19 @@ export default function Explore() {
                     </a>
                   </div>
                   <div>
-                    <h1 className="text-lg font-bold">{product.title}</h1>
-                    <h3>
+                    <a
+                      href={product.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <h4 className="text-md font-semibold hover:underline">
+                        {product.title}
+                      </h4>
+                    </a>
+                    <h5 className="text-sm">
                       {product.variants[0].price}{" "}
                       <span className="text-sm">(store currency)</span>
-                    </h3>
+                    </h5>
                     <p className="text-sm">{product.hostname}</p>
                   </div>
                 </div>

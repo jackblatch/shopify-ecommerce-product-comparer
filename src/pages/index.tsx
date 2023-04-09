@@ -17,10 +17,12 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>ShopAround</title>
+        <title>
+          QuickShop - Compare products from your favourite online stores
+        </title>
         <meta
           name="description"
-          content="Compare products from your favourite stores"
+          content="Compare products from your favourite online stores"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -39,7 +41,7 @@ const Home: NextPage = () => {
               <h2 className="mt-6 max-w-[600px] text-xl text-black">
                 Search, shop and explore your favourite stores in one place.
                 Whether you're wanting to compare prices, or manage your
-                shopping, ShopAround is the place!
+                shopping, QuickShop is the place!
               </h2>
               <div className="mt-6 w-full">
                 <label className="sr-only" htmlFor="search">

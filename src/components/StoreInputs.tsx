@@ -6,14 +6,16 @@ import InputwithLabel from "./InputwithLabel";
 export default function StoreInputs({
   selectedStores,
   setSelectedStores,
+  inputCount,
+  setInputCount,
 }: {
   selectedStores: Record<string, string>;
   setSelectedStores: React.Dispatch<
     React.SetStateAction<Record<string, string>>
   >;
+  inputCount: number;
+  setInputCount: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const [inputCount, setInputCount] = useState(2);
-
   return (
     <div className="text-white">
       <div className="flex flex-col gap-6">
@@ -45,24 +47,17 @@ export default function StoreInputs({
           </div>
         ))}
       </div>
-      <button
-        type="button"
-        onClick={() => {
-          inputCount < 4
-            ? setInputCount((prev) => prev + 1)
-            : toast.error(
-                "You can only add up to 4 stores in a single search",
-                {
-                  position: "bottom-right",
-                }
-              );
-        }}
-        className="my-6 flex w-full items-center justify-center rounded-md bg-[#272549] py-2"
-      >
-        <div className="rounded-full bg-gray-200 p-1 text-slate-900">
-          <PlusIcon className="w-5 text-2xl font-bold" />
-        </div>
-      </button>
+      {inputCount < 4 && (
+        <button
+          type="button"
+          onClick={() => setInputCount((prev) => prev + 1)}
+          className="mt-6 flex w-full items-center justify-center rounded-md bg-[#272549] py-2"
+        >
+          <div className="rounded-full bg-gray-200 p-1 text-slate-900">
+            <PlusIcon className="w-5 text-2xl font-bold" />
+          </div>
+        </button>
+      )}
     </div>
   );
 }

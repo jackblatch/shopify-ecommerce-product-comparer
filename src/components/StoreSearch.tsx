@@ -2,9 +2,12 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import GradientButton from "./GradientButton";
 import StoreInputs from "./StoreInputs";
+import { z } from "zod";
+import { toast } from "react-hot-toast";
 
 export default function StoreSearch() {
   const router = useRouter();
+  const [inputCount, setInputCount] = useState(2);
   const [selectedStores, setSelectedStores] = useState<Record<string, string>>({
     1: "",
     2: "",
@@ -12,9 +15,34 @@ export default function StoreSearch() {
     4: "",
   });
 
+  const isURL = z.string().url();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("susb");
+
+    const stores = Object.values(selectedStores);
+    stores.splice(1);
+    console.log("STORSS", stores);
+    const filteredStores = stores.filter((item) => item !== "");
+    let validURLs = true;
+    filteredStores.map((url) => {
+      try {
+        if (url === "" || !isURL.parse("https://" + url)) {
+          throw new Error("Invalid URL");
+        }
+      } catch (err) {
+        console.log("ERROR", url, err);
+        validURLs = false;
+      }
+    });
+
+    if (!validURLs) {
+      toast.error("One of more entries has an invalid URL", {
+        position: "bottom-center",
+      });
+      return;
+    }
+
     router.push(
       "/discover/search?q=" +
         router.query.q +
@@ -44,15 +72,19 @@ export default function StoreSearch() {
             </h2>
           </div>
           <StoreInputs
+            inputCount={inputCount}
+            setInputCount={setInputCount}
             selectedStores={selectedStores}
             setSelectedStores={setSelectedStores}
           />
-          <GradientButton
-            type="submit"
-            disabled={router.query.q ? false : true}
-          >
-            Search
-          </GradientButton>
+          <div className="mt-6">
+            <GradientButton
+              type="submit"
+              disabled={router.query.q ? false : true}
+            >
+              Search
+            </GradientButton>
+          </div>
         </form>
       </div>
     </>
