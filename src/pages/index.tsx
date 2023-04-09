@@ -2,7 +2,6 @@ import { ArrowRightIcon } from "@heroicons/react/24/solid";
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import GradientButton from "~/components/GradientButton";
 import InputwithLabel from "~/components/InputwithLabel";
@@ -41,7 +40,7 @@ const Home: NextPage = () => {
               </h1>
               <h2 className="text-md mt-6 max-w-[600px] text-black md:text-xl">
                 Search, shop and explore your favourite stores in one place.
-                Whether you're wanting to compare prices, or manage your
+                Whether you&apos;re wanting to compare prices, or manage your
                 shopping, QuickShop is the place!
               </h2>
               <div className="mt-6 w-full">
@@ -58,7 +57,9 @@ const Home: NextPage = () => {
                   <Link
                     href={`${
                       searchTerm.search !== ""
-                        ? `/discover/select-stores?q=${searchTerm.search}`
+                        ? `/discover/select-stores?q=${String(
+                            searchTerm.search
+                          )}`
                         : "#"
                     }`}
                     className="w-full md:w-fit"

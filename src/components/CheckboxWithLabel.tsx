@@ -9,9 +9,9 @@ export default function CheckboxWithLabel({
   id: string;
   name: string;
   label: string;
-  state: Record<string, any>;
-  setState: React.Dispatch<React.SetStateAction<Record<string, any>>>;
-  [x: string]: any;
+  state: Record<string, boolean>;
+  setState: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
+  [x: string]: unknown;
 }) {
   return (
     <div className="space-y-5">

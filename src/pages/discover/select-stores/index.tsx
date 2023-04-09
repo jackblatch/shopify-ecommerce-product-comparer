@@ -16,11 +16,10 @@ export default function SelectStores() {
   }
 
   if (router.isReady && !router.query.q) {
-    // router.push("/"); // // @TODO: This is causing hydration bug
     return (
       <CenteredCardWrapper>
         <p>No search term</p>
-        <Link href={`/discover/select-stores?q=${router.query.q}`}>
+        <Link href={`/discover/select-stores?q=${String(router.query.q)}`}>
           <Button>
             <div className="flex items-center justify-center gap-2">
               <ArrowLeftIcon className="h-4 w-4" />
@@ -48,7 +47,9 @@ export default function SelectStores() {
         <div className="mt-8 rounded-2xl bg-white p-12 text-black sm:w-[600px]">
           <h1 className="text-3xl font-semibold">
             Searching for{" "}
-            <span className="text-indigo-500">"{router.query.q}"</span>
+            <span className="text-indigo-500">
+              &quot;{router.query.q}&quot;
+            </span>
           </h1>
           <StoreSearch />
         </div>
