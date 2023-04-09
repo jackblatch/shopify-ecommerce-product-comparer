@@ -24,7 +24,7 @@ export default function StoreInputs({
             <div className="flex-1">
               <InputwithLabel
                 label={`Store ${i + 1}`}
-                placeholder="Enter domain..."
+                placeholder="Enter domain (e.g. example.com)"
                 type="text"
                 id={String(i + 1)}
                 state={selectedStores}

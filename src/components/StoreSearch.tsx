@@ -25,18 +25,18 @@ export default function StoreSearch() {
     console.log("STORSS", stores);
     const filteredStores = stores.filter((item) => item !== "");
     let validURLs = true;
+
     filteredStores.map((url) => {
       try {
         if (url === "" || !isURL.parse("https://" + url)) {
           throw new Error("Invalid URL");
         }
       } catch (err) {
-        console.log("ERROR", url, err);
         validURLs = false;
       }
     });
 
-    if (!validURLs) {
+    if (!validURLs || filteredStores.length === 0) {
       toast.error("One of more entries has an invalid URL", {
         position: "bottom-center",
       });
@@ -68,7 +68,7 @@ export default function StoreSearch() {
         <form onSubmit={handleSubmit}>
           <div className="mb-4 border-b border-white pb-2">
             <h2 className="mt-2 text-lg">
-              Enter the websites you'd like to search for this product below
+              Enter the websites you'd like to search for this product below.
             </h2>
           </div>
           <StoreInputs
@@ -80,7 +80,11 @@ export default function StoreSearch() {
           <div className="mt-6">
             <GradientButton
               type="submit"
-              disabled={router.query.q ? false : true}
+              disabled={
+                !router.query.q || Object.values(selectedStores)[0] === ""
+                  ? true
+                  : false
+              }
             >
               Search
             </GradientButton>

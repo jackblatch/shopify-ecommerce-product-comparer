@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import CheckboxWithLabel from "~/components/CheckboxWithLabel";
 import FieldSet from "~/components/FieldSet";
 import NavBar from "~/components/NavBar";
+import StoreSearchError from "~/components/StoreSearchError";
 import { api } from "~/utils/api";
 
 export default function Explore() {
@@ -87,7 +88,7 @@ export default function Explore() {
   }
 
   if (getProductsFromDomTree.isError) {
-    return <p>Error</p>;
+    return <StoreSearchError />;
   }
 
   if (router.isReady && !router.query.q) {
