@@ -16,7 +16,6 @@ export const productsRouter = createTRPCRouter({
     )
     .mutation(async ({ input }) => {
       if (!input?.hostname) return [];
-      console.log({ hostname });
       // @TODO handle currency - set cart_currency cookie to USD for all requests or get currency from site
       const getProducts = async () => {
         const browser = await puppeteer.launch();

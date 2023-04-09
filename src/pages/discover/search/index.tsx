@@ -62,9 +62,6 @@ export default function Explore() {
     }
   }, [stores, router]);
 
-  console.log("filteredProducts", filteredProducts);
-  console.log("prods", products);
-
   useEffect(() => {
     if (Object.entries(selectedStores).length === 0 || products.length === 0) {
       return;
@@ -129,8 +126,8 @@ export default function Explore() {
           Searching for{" "}
           <span className="text-indigo-500">&quot;{router.query.q}&quot;</span>
         </h1>
-        <div className="m-auto grid max-w-[1600px] grid-cols-12">
-          <div className="col-span-2 p-12">
+        <div className="m-auto flex max-w-[1600px] flex-col md:grid md:grid-cols-12 md:gap-2">
+          <div className="p-12 pb-0 md:col-span-2 md:pb-12">
             <div className="sticky top-10">
               <h2 className="text-xl text-black ">Stores</h2>
               <FieldSet legend="stores">
@@ -149,7 +146,7 @@ export default function Explore() {
               </FieldSet>
             </div>
           </div>
-          <div className="col-span-10 m-auto grid grid-cols-1 gap-6 p-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          <div className="m-auto grid grid-cols-1 gap-6 p-12 sm:grid-cols-2 md:col-span-10 md:grid-cols-3 lg:grid-cols-4">
             {filteredProducts.map((store) => {
               return store.map((product) => {
                 return (

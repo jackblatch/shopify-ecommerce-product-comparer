@@ -22,7 +22,6 @@ export default function StoreSearch() {
 
     const stores = Object.values(selectedStores);
     stores.splice(1);
-    console.log("STORSS", stores);
     const filteredStores = stores.filter((item) => item !== "");
     let validURLs = true;
 

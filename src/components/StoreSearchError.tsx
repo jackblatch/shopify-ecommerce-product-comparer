@@ -11,6 +11,7 @@ export default function StoreSearchError() {
       <h2>Sorry, an error occured searching your stores</h2>
       <h3>Why does this occur?</h3>
       <p>
+        You could be seeing this error message for a variety of reasons.
         Currently, there are limitations on which stores can be searched. Please
         check that the store(s) searched matches the following criteria:
       </p>
@@ -24,6 +25,11 @@ export default function StoreSearchError() {
           &apos;?variant=&apos;
         </li>
       </ul>
+      <p>
+        None of the above? In that case, it&apos;s likely that your search
+        didn&apos;t yield any results. Please <Link href="/">click here</Link>{" "}
+        to try again with another search term.
+      </p>
       <div className="mt-10">
         <Link href={`/discover/select-stores?q=${String(router.query.q)}`}>
           <Button>
