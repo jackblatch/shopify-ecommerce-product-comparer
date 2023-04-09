@@ -47,7 +47,9 @@ export default function SelectStores() {
         <div className="mt-8 rounded-2xl bg-white p-12 text-black sm:w-[600px]">
           <h1 className="text-3xl font-semibold">
             Searching for{" "}
-            <span className="text-indigo-500">&quot{router.query.q}&quot</span>
+            <span className="text-indigo-500">
+              &quot;{router.query.q}&quot;
+            </span>
           </h1>
           <StoreSearch />
         </div>
