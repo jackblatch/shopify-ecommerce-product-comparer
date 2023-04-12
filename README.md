@@ -1,3 +1,1 @@
-# QuickShop
-
-Work in progress.
+# Ecommerce Product Comparer
