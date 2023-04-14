@@ -2,7 +2,7 @@
 
 Ecommerce product comparision website allowing users to compare products from different stores.
 
-[Home Page Screenshot](/blob/main/public/home-page-screenshot.png?raw=true)
+![Home Page Screenshot](/public/home-page-screenshot.png?raw=0)
 
 ## Features
 
