@@ -2,6 +2,8 @@
 
 Ecommerce product comparision website allowing users to compare products from different stores.
 
+[Home Page Screenshot](/blob/main/public/home-page-screenshot.png?raw=true)
+
 ## Features
 
 - Multi-step form allowing the user to enter a product name as their search query and then enter up to 4 stores to search.
