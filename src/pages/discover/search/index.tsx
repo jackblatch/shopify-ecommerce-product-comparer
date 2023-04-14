@@ -85,7 +85,7 @@ export default function Explore() {
     return (
       <>
         <Head>
-          <title>Search Results - QuickShop</title>
+          <title>Search Results - ShopAround</title>
         </Head>
         <CenteredCardWrapper>
           <div className="flex flex-col items-center justify-center gap-4 text-center">
@@ -118,7 +118,7 @@ export default function Explore() {
   return (
     <>
       <Head>
-        <title>Search Results - QuickShop</title>
+        <title>Search Results - ShopAround</title>
       </Head>
       <div className="h-full min-h-screen bg-gray-100">
         <NavBar />

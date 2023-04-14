@@ -34,7 +34,7 @@ export default function SelectStores() {
   return (
     <>
       <Head>
-        <title>Select Stores - QuickShop</title>
+        <title>Select Stores - ShopAround</title>
         <meta
           name="description"
           content="Compare products from your favourite stores"

@@ -97,7 +97,7 @@ export const productsRouter = createTRPCRouter({
             return {
               id: json.product.id,
               hostname: item.hostname.replace(WWWPrefix, ""),
-              link: item.link + "?ref=quickshop",
+              link: item.link + "?ref=shoparound",
               handle: json.product.handle,
               title: json.product.title,
               image: json.product.image?.src,
